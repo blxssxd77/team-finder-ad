@@ -1,13 +1,11 @@
-import re
-
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 
+from team_finder.validators import validate_github_url
+
 from .models import User
 from .utils import normalize_phone, validate_phone
-
-GITHUB_PATTERN = re.compile(r'^https?://(www\.)?github\.com/', re.IGNORECASE)
 
 
 class RegistrationForm(forms.ModelForm):
@@ -78,10 +76,7 @@ class ProfileEditForm(forms.ModelForm):
         return phone
 
     def clean_github_url(self):
-        url = self.cleaned_data.get('github_url', '')
-        if url and not GITHUB_PATTERN.match(url):
-            raise forms.ValidationError('Ссылка должна вести на github.com')
-        return url
+        return validate_github_url(self.cleaned_data.get('github_url', ''))
 
 
 class CustomPasswordChangeForm(PasswordChangeForm):

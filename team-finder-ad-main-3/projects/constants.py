@@ -1,0 +1,12 @@
+NAME_MAX_LENGTH = 128
+DESCRIPTION_MAX_LENGTH = 2000
+
+STATUS_OPEN = 'open'
+STATUS_CLOSED = 'closed'
+
+STATUS_CHOICES = (
+    (STATUS_OPEN, 'Открыт'),
+    (STATUS_CLOSED, 'Закрыт'),
+)
+
+STATUS_MAX_LENGTH = max(len(value) for value, _ in STATUS_CHOICES)

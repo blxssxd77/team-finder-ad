@@ -1,6 +1,12 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+from .constants import (
+    ABOUT_MAX_LENGTH,
+    NAME_MAX_LENGTH,
+    PHONE_MAX_LENGTH,
+    SURNAME_MAX_LENGTH,
+)
 from .utils import generate_avatar
 
 
@@ -30,12 +36,12 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('Email', unique=True)
-    name = models.CharField('Имя', max_length=124)
-    surname = models.CharField('Фамилия', max_length=124)
+    name = models.CharField('Имя', max_length=NAME_MAX_LENGTH)
+    surname = models.CharField('Фамилия', max_length=SURNAME_MAX_LENGTH)
     avatar = models.ImageField('Аватар', upload_to='avatars/')
-    phone = models.CharField('Телефон', max_length=12, blank=True, default='')
+    phone = models.CharField('Телефон', max_length=PHONE_MAX_LENGTH, blank=True, default='')
     github_url = models.URLField('GitHub', blank=True)
-    about = models.TextField('О себе', max_length=256, blank=True)
+    about = models.TextField('О себе', max_length=ABOUT_MAX_LENGTH, blank=True)
     is_active = models.BooleanField('Активен', default=True)
     is_staff = models.BooleanField('Администратор', default=False)
     date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True)

@@ -1,8 +1,9 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
+
+from team_finder.pagination import get_page
 
 from .forms import CustomPasswordChangeForm, LoginForm, ProfileEditForm, RegistrationForm
 from .models import User
@@ -35,8 +36,8 @@ def logout_view(request):
     return redirect('projects:list')
 
 
-def user_detail(request, pk):
-    user = get_object_or_404(User, pk=pk)
+def user_detail(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
     return render(request, 'users/user-details.html', {'user': user})
 
 
@@ -50,7 +51,7 @@ def edit_profile(request):
     )
     if form.is_valid():
         form.save()
-        return redirect('users:detail', pk=request.user.pk)
+        return redirect('users:detail', user_id=request.user.pk)
     return render(request, 'users/edit_profile.html', {
         'form': form,
         'user': request.user,
@@ -64,7 +65,7 @@ def change_password(request):
     if form.is_valid():
         form.save()
         auth.update_session_auth_hash(request, form.user)
-        return redirect('users:detail', pk=request.user.pk)
+        return redirect('users:detail', user_id=request.user.pk)
     return render(request, 'users/change_password.html', {'form': form})
 
 
@@ -90,8 +91,7 @@ def user_list(request):
                 participated_projects__owner=request.user,
             ).exclude(pk=request.user.pk).distinct()
 
-    paginator = Paginator(users, 12)
-    page = paginator.get_page(request.GET.get('page'))
+    page = get_page(users, request)
     return render(request, 'users/participants.html', {
         'participants': page.object_list,
         'active_filter': active_filter,
