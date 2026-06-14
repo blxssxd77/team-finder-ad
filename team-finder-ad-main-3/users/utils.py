@@ -5,12 +5,12 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from PIL import Image, ImageDraw, ImageFont
 
-from .constants import AVATAR_FONT_SIZE, AVATAR_SIZE, AVATAR_VERTICAL_OFFSET
-
-AVATAR_COLORS = [
-    '#6B7280', '#4B5563', '#5B6B7A', '#4A5568',
-    '#718096', '#2D3748', '#64748B', '#475569',
-]
+from .constants import (
+    AVATAR_COLORS,
+    AVATAR_FONT_SIZE,
+    AVATAR_SIZE,
+    AVATAR_VERTICAL_OFFSET,
+)
 
 PHONE_PATTERN = re.compile(r'^(8\d{10}|\+7\d{10})$')
 

@@ -5,7 +5,12 @@ from django.views.decorators.http import require_http_methods
 
 from team_finder.pagination import get_page
 
-from .forms import CustomPasswordChangeForm, LoginForm, ProfileEditForm, RegistrationForm
+from .forms import (
+    CustomPasswordChangeForm,
+    LoginForm,
+    ProfileEditForm,
+    RegistrationForm,
+)
 from .models import User
 
 

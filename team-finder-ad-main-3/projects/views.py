@@ -1,13 +1,12 @@
 from http import HTTPStatus
 
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods, require_POST
 
 from team_finder.pagination import get_page
 from users.models import User
-
 from .constants import STATUS_CLOSED, STATUS_OPEN
 from .forms import ProjectForm
 from .models import Project
@@ -58,7 +57,9 @@ def project_create(request):
 @login_required
 @require_http_methods(['GET', 'POST'])
 def project_edit(request, project_id):
-    project = get_object_or_404(Project, pk=project_id, owner=request.user)
+    project = get_object_or_404(Project, pk=project_id)
+    if project.owner != request.user:
+        raise Http404
     form = ProjectForm(request.POST or None, instance=project)
     if not form.is_valid():
         return render(request, 'projects/create-project.html', {
@@ -75,7 +76,10 @@ def project_complete(request, project_id):
     project = get_object_or_404(Project, pk=project_id, owner=request.user)
     if project.status != STATUS_OPEN:
         return JsonResponse(
-            {'status': 'error'},
+            {
+                'status': 'error',
+                'message': 'Завершить можно только открытый проект.',
+            },
             status=HTTPStatus.BAD_REQUEST,
         )
     project.status = STATUS_CLOSED
@@ -89,7 +93,10 @@ def toggle_participate(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     if project.owner == request.user:
         return JsonResponse(
-            {'status': 'error'},
+            {
+                'status': 'error',
+                'message': 'Автор проекта не может участвовать в нём.',
+            },
             status=HTTPStatus.BAD_REQUEST,
         )
     is_participant = project.participants.filter(pk=request.user.pk).exists()

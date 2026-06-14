@@ -8,7 +8,7 @@
    ```
 2. Перейдите в папку проекта:
    ```bash
-   cd team-finder-ad-main-3
+   cd team-finder-ad
    ```
 3. Скопируйте `.env_example` в `.env` (если файла `.env` ещё нет):
    ```bash
@@ -21,8 +21,18 @@
    docker compose up --build
    ```
 6. Откройте [localhost](http://localhost:8000).
+   Вход в админку: [localhostadmin]( http://localhost:8000/admin/)
+   
+   Логин: admin@teamfinder.ru
+   
+   Пароль: admin12345
 
-При первом запуске автоматически выполняются миграции, сбор статики и загрузка тестовых данных.
+При первом запуске контейнер `web` автоматически выполняет:
+   ```bash
+   python manage.py migrate --noinput
+   python manage.py collectstatic --noinput
+   python manage.py load_demo_data
+   ```
 
 ### Тестовые аккаунты
 
@@ -52,6 +62,6 @@ python manage.py runserver
 
 Автор: Кислов В. В.
 
-Связь: nd206971@gmail.com
+Связь: [почта](mailto:nd206971@gmail.com)
 
 Техно-стек: Python, Django, SQL, Git, GitHub, Docker, HTML/CSS
